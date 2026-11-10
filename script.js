@@ -126,3 +126,22 @@ document.querySelectorAll("[data-valor]").forEach(boton => {
 document.getElementById("calcular").addEventListener("click", calcular);
 
 actualizarPantalla();
+
+// Permitir utilizar la calculadora con el teclado
+document.addEventListener("keydown", (event) => {
+    const tecla = event.key;
+
+    if (/^[0-9]$/.test(tecla)) {
+        agregarNumero(tecla);
+    } else if (["+", "-", "*", "/"].includes(tecla)) {
+        seleccionarOperador(tecla);
+    } else if (tecla === "Enter" || tecla === "=") {
+        event.preventDefault();
+        calcular();
+    } else if (tecla === "Backspace") {
+        event.preventDefault();
+        document.getElementById("borrar").click();
+    } else if (tecla === "Escape") {
+        document.getElementById("limpiar").click();
+    }
+});
