@@ -41,6 +41,20 @@ function agregarNumero(numero) {
     mostrarOperacion();
 }
 
+
+function agregarDecimal() {
+    if (reiniciarPantalla) {
+        valorActual = "0.";
+        reiniciarPantalla = false;
+    } else if (!valorActual.includes(".")) {
+        valorActual += ".";
+    }
+
+    actualizarPantalla();
+    mostrarOperacion();
+}
+
+
 function seleccionarOperador(nuevoOperador) {
     if (operador !== null && !reiniciarPantalla) {
         calcular();
@@ -119,6 +133,8 @@ document.querySelectorAll("[data-valor]").forEach(boton => {
             seleccionarOperador(valor);
         } else if (/^[0-9]$/.test(valor)) {
             agregarNumero(valor);
+        } else if (valor === ".") {
+            agregarDecimal();
         }
     });
 });
@@ -143,5 +159,8 @@ document.addEventListener("keydown", (event) => {
         document.getElementById("borrar").click();
     } else if (tecla === "Escape") {
         document.getElementById("limpiar").click();
+    } else if (tecla === "." || tecla === ",") {
+        agregarDecimal();
     }
+
 });
