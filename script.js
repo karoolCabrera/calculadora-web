@@ -3,6 +3,7 @@ let valorActual = "0";
 let valorAnterior = null;
 let operador = null;
 let reiniciarPantalla = false;
+let hayError = false;
 
 const pantalla = document.getElementById("resultado");
 const operacion = document.getElementById("operacion");
@@ -28,7 +29,10 @@ function mostrarOperacion() {
 }
 
 function agregarNumero(numero) {
-    if (reiniciarPantalla) {
+    if (hayError) {
+        valorActual = numero;
+        hayError = false;
+    } else if (reiniciarPantalla) {
         valorActual = numero;
         reiniciarPantalla = false;
     } else {
@@ -43,8 +47,9 @@ function agregarNumero(numero) {
 
 
 function agregarDecimal() {
-    if (reiniciarPantalla) {
+    if (hayError || reiniciarPantalla) {
         valorActual = "0.";
+        hayError = false;
         reiniciarPantalla = false;
     } else if (!valorActual.includes(".")) {
         valorActual += ".";
@@ -68,12 +73,25 @@ function seleccionarOperador(nuevoOperador) {
 }
 
 function calcular() {
-    if (operador === null || valorAnterior === null) {
+    if (hayError || operador === null || valorAnterior === null) {
         return;
     }
 
     const segundoValor = parseFloat(valorActual);
     let resultado;
+
+    if (operador === "/" && segundoValor === 0) {
+        valorActual = "Error";
+        operacion.textContent = "No se puede dividir entre cero";
+
+        valorAnterior = null;
+        operador = null;
+        reiniciarPantalla = true;
+        hayError = true;
+
+        actualizarPantalla();
+        return;
+    }
 
     switch (operador) {
         case "+":
@@ -106,6 +124,7 @@ document.getElementById("limpiar").addEventListener("click", () => {
     valorAnterior = null;
     operador = null;
     reiniciarPantalla = false;
+    hayError = false;
 
     operacion.textContent = "";
     actualizarPantalla();
